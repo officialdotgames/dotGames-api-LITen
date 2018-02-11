@@ -25,8 +25,7 @@
       <label for="password_confirmation" class="sr-only">Confirm Password</label>
       <input type="password" id="password_confirmation" name="password_confirmation" class="form-control form-bottom" placeholder="Confirm Password" required>
 
-      <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      <a href="/login"><p class="register">Already Registered?</p></a>
+      <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
       <p class="mt-5 mb-3 text-muted">&copy; Official dotGames 2018</p>
     </form>
   </body>

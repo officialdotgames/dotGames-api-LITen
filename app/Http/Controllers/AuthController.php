@@ -38,7 +38,8 @@ class AuthController extends Controller
       $user->alexa_token = $alexa_token;
       $user->save();
 
-      return response()->json(['message' => 'Account created with email: ' . $request->email], 200);
+      return redirect('/');
+
     }
 
     public function login(Request $request) {
