@@ -22,3 +22,6 @@ $router->get('/login', function () {
 $router->get('/register', function () {
     return view('register');
 });
+
+$router->post('/register', 'AuthController@register');
+$router->post('/login', 'AuthController@login');
