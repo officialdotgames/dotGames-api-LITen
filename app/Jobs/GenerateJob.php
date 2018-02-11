@@ -32,7 +32,7 @@ class GenerateJob extends Job
     {
 
       $ids = array("id:d073d532ad4f", "id:d073d5123b9f", "id:d073d52013c2", "id:d073d511fe55", "id:d073d532ad22");
-      $colors = array("red", "purple", "blue", "green", "yellow", "orange");
+      $colors = array("red", "purple", "blue", "green", "yellow");
       shuffle($ids);
       shuffle($colors);
 
@@ -41,7 +41,6 @@ class GenerateJob extends Job
       $current_color = 0;
       foreach($ids as $id) {
         LifxApi::setSelectorProperity($id, 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', $colors[$current_color], "on");
-        $current_color++;
         LifxApi::setSelectorProperity($id, 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', null, "off");
 
         $color = Color::where('color', $colors[$current_color])->first();
@@ -53,6 +52,9 @@ class GenerateJob extends Job
         $sequence->game()->associate($this->game->id);
         $sequence->color()->associate($color->id);
         $sequence->save();
+
+        $current_color++;
+
 
       }
 

@@ -8,6 +8,7 @@ use App\Sequence;
 use App\Color;
 use App\Libraries\LifxApi;
 use App\Jobs\GenerateJob;
+use App\Jobs\SubmitJob;
 
 class GameController extends Controller
 {
@@ -81,28 +82,27 @@ class GameController extends Controller
                             ->get();
       $user_sequence = explode(" ", $request->sequence);
 
+      if(count($correct_sequence) != count($user_sequence)) {
+        $game->active = 0;
+        $game->save();
+        dispatch(new SubmitJob(false));
+        return response()->json(['correct' => false, 'score' => $game->level]);
+      }
+
+
+
       for($i = 0; $i < count($correct_sequence); $i++) {
         $color = Color::where('id', $correct_sequence[$i]->color_id)->first();
         if($user_sequence[$i] != $color->color) {
-
           $game->active = 0;
           $game->save();
-          LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "red", "on");
-          LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "off");
-          LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "on");
 
+          dispatch(new SubmitJob(false));
           return response()->json(['correct' => false, 'score' => $game->level]);
 
-          //make lights red
         }
       }
-      LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "off");
-      LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "green", "on");
-      LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "off");
-      LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "on", 5);
+      dispatch(new SubmitJob(true));
       return response()->json(['correct' => true ]);
-
-      //make lights green
     }
-
 }
