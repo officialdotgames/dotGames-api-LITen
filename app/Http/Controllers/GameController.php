@@ -9,6 +9,7 @@ use App\Color;
 use App\Libraries\LifxApi;
 use App\Jobs\GenerateJob;
 use App\Jobs\SubmitJob;
+use App\Jobs\StartGameJob;
 
 class GameController extends Controller
 {
@@ -25,6 +26,9 @@ class GameController extends Controller
 
     public function StartGame(Request $request) {
 
+      $ids = array("id:d073d532ad4f", "id:d073d5123b9f", "id:d073d52013c2", "id:d073d511fe55", "id:d073d532ad22");
+      $colors = array("red", "purple", "blue", "green", "yellow");
+
       $games = Game::where('user_id', $request->user->id)->get();
 
       foreach($games as $game) {
@@ -37,6 +41,14 @@ class GameController extends Controller
       $game->level = 0;
       $game->user()->associate($request->user->id);
       $game->save();
+
+      dispatch(new StartGameJob($ids[0], $colors[0], false, true));
+      dispatch(new StartGameJob($ids[1], $colors[1], false, false));
+      dispatch(new StartGameJob($ids[2], $colors[2], false, false));
+      dispatch(new StartGameJob($ids[3], $colors[3], false, false));
+      dispatch(new StartGameJob($ids[4], $colors[4], false, false));
+      dispatch(new StartGameJob($ids[4], $colors[4], true, false));
+
 
       return $game;
       }
@@ -51,7 +63,6 @@ class GameController extends Controller
 
         $game = Game::where('user_id', $request->user->id)->where('active', 1)->first();
         if($game == null) {
-          echo("no game\n");
           return response()->json(['message' => 'Create a game first.'], 400);
         }
         $game->level = $game->level + 1;
@@ -67,9 +78,17 @@ class GameController extends Controller
 
     public function SubmitRound(Request $request) {
 
-      $this->validate($request, [
+
+      //just gonna send it.
+      //nother day nother beer.
+      //🔥
+      //💯
+
+      /*$this->validate($request, [
         "sequence" => "required"
       ]);
+      */
+
       $game = Game::where('user_id', $request->user->id)->where('active', 1)->first();
 
       if($game == null) {
@@ -80,7 +99,7 @@ class GameController extends Controller
                             ->where('game_id', $game->id)
                             ->orderBy('order', 'asc')
                             ->get();
-      $user_sequence = explode(" ", $request->sequence);
+      $user_sequence = explode(" ", $request->header('sequence'));
 
       if(count($correct_sequence) != count($user_sequence)) {
         $game->active = 0;
