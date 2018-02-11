@@ -43,6 +43,7 @@ class GameController extends Controller
       return "test";
       }
 
+      //convert to async
       public function GenerateRound(Request $request) {
 
         $ids = array("id:d073d532ad4f", "id:d073d5123b9f", "id:d073d52013c2", "id:d073d511fe55", "id:d073d532ad22");
@@ -83,7 +84,44 @@ class GameController extends Controller
     }
 
     public function SubmitRound(Request $request) {
+
+      $this->validate($request, [
+        "sequence" => "required"
+      ]);
+      $game = Game::where('user_id', $request->user->id)->where('active', 1)->first();
+
+      if($game == null) {
+        return response()->json(['message' => 'Create a game first.'], 400);
+      }
+
+      $correct_sequence = Sequence::where('level', $game->level)
+                            ->where('game_id', $game->id)
+                            ->orderBy('order', 'asc')
+                            ->get();
+      $user_sequence = explode(" ", $request->sequence);
+
+      for($i = 0; $i < count($correct_sequence); $i++) {
+        $color = Color::where('id', $correct_sequence[$i]->color_id)->first();
+        if($user_sequence[$i] != $color->color) {
+
+          $game->active = 0;
+          $game->save();
+          LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "red", "on");
+          LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "off");
+          LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "on");
+
+          return response()->json(['correct' => false, 'score' => $game->level]);
+
+          //make lights red
+        }
+      }
+      LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "off");
+      LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "green", "on");
+      LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "off");
+      LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "on", 5);
       return response()->json(['correct' => true ]);
+
+      //make lights green
     }
 
 }
