@@ -45,7 +45,12 @@ class AuthController extends Controller
       $this->validate($request, [
         "email" => "required|email",
         "password" => "required",
+        //todo require other parameters
       ]);
+
+      if($request->client_id != "Ll7K65x9a8EpEEw9vsPto3u25FVMWLIqrgoA") {
+        return response()->json(['message' => 'Invalid client'], 400);
+      }
 
       $user = User::where('email', $request->email)->first();
 
@@ -54,8 +59,12 @@ class AuthController extends Controller
       }
 
       if(app('hash')->check($request->password, $user->password)) {
-        return response()->json($user);
+
+        $redirect_uri = $request->redirect_uri . "#state=" . $request->state . "&access_token=" . $user->alexa_token . "&token_type=bearer";
+        return response()->json([ 'link' => $redirect_uri ], 200);
+
       } else {
+
         return response()->json(['message' => 'Invalid username or password'], 401);
       }
 

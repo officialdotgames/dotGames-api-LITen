@@ -12,18 +12,18 @@
   </head>
 
   <body class="text-center">
-    <form class="form-signin">
+    <form class="form-signin" action="/v1/api/register" method="post">
       <img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
       <h1 class="h3 mb-3 font-weight-normal">Register</h1>
 
-      <label for="inputEmail" class="sr-only">Email address</label>
-      <input type="email" id="inputEmail" class="form-control form-top" placeholder="Email address" required autofocus>
+      <label for="email" class="sr-only">Email address</label>
+      <input type="email" id="email" name="email" class="form-control form-top" placeholder="Email address" required autofocus>
 
-      <label for="inputPassword" class="sr-only">Password</label>
-      <input type="password" id="inputPassword" class="form-control form-middle" placeholder="Password" required>
+      <label for="password" class="sr-only">Password</label>
+      <input type="password" id="password" name="password" class="form-control form-middle" placeholder="Password" required>
 
-      <label for="inputConfirmPassword" class="sr-only">Confirm Password</label>
-      <input type="password" id="inputPassword" class="form-control form-bottom" placeholder="Confirm Password" required>
+      <label for="password_confirmation" class="sr-only">Confirm Password</label>
+      <input type="password" id="password_confirmation" name="password_confirmation" class="form-control form-bottom" placeholder="Confirm Password" required>
 
       <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
       <a href="/login"><p class="register">Already Registered?</p></a>
