@@ -23,5 +23,5 @@ $router->get('/register', function () {
     return view('register');
 });
 
-$router->post('/register', 'AuthController@register');
-$router->post('/login', 'AuthController@login');
+$router->post('/v1/api/register', 'AuthController@register');
+$router->post('/v1/api/login', 'AuthController@login');
