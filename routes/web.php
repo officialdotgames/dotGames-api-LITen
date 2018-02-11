@@ -33,7 +33,6 @@ $router->post('/v1/api/login', 'AuthController@login');
 $router->group(['middleware' => ['oauth'], 'prefix' => 'v1/api'], function() use ($router) {
 
   $router->get('/test', function () {
-      return json_encode(LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "on", 7));
   });
 
   $router->post('/liten/game/start', 'GameController@StartGame');
