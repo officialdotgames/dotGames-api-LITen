@@ -60,8 +60,8 @@ class AuthController extends Controller
 
       if(app('hash')->check($request->password, $user->password)) {
 
-        $redirect_uri = $request->redirect_uri . "#state=" . $request->state . "&access_token=" . $user->alexa_token . "&token_type=bearer";
-        return response()->json([ 'link' => $redirect_uri ], 200);
+        $redirect_uri = $request->redirect_uri . "#state=" . $request->state . "&access_token=" . $user->alexa_token . "&token_type=Bearer";
+        return response()->json([ 'link' => $request->input('redirect_uri') . '#state=' . $request->input('state') .'&access_token=' . $user->alexa_token . '&token_type=bearer' ], 200);
 
       } else {
 

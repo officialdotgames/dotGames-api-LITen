@@ -25,3 +25,13 @@ $router->get('/register', function () {
 
 $router->post('/v1/api/register', 'AuthController@register');
 $router->post('/v1/api/login', 'AuthController@login');
+
+
+//Alexa OAuth Routes
+$router->group(['middleware' => ['oauth'], 'prefix' => 'v1/api', 'namespace' => 'App\Http\Controllers'], function() use ($router) {
+
+  $router->get('/test', function () {
+      return "test";
+  });
+
+});
