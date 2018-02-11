@@ -1,7 +1,5 @@
 <?php
 
-use App\Libraries\LifxApi;
-
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -13,7 +11,7 @@ use App\Libraries\LifxApi;
 |
 */
 
-$router->get('/', function () {
+$router->get('/', function () use ($router) {
     return view('index');
 });
 

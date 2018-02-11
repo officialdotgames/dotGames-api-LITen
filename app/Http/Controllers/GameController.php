@@ -7,6 +7,7 @@ use App\Game;
 use App\Sequence;
 use App\Color;
 use App\Libraries\LifxApi;
+use App\Jobs\GenerateJob;
 
 class GameController extends Controller
 {
@@ -46,41 +47,21 @@ class GameController extends Controller
       //convert to async
       public function GenerateRound(Request $request) {
 
-        $ids = array("id:d073d532ad4f", "id:d073d5123b9f", "id:d073d52013c2", "id:d073d511fe55", "id:d073d532ad22");
-        $colors = array("red", "purple", "blue", "green", "yellow", "orange");
-        shuffle($ids);
-        shuffle($colors);
 
         $game = Game::where('user_id', $request->user->id)->where('active', 1)->first();
         if($game == null) {
+          echo("no game\n");
           return response()->json(['message' => 'Create a game first.'], 400);
         }
         $game->level = $game->level + 1;
         $game->save();
 
-        LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', null, "off");
+        dispatch(new GenerateJob($game));
 
-        $current_color = 0;
-        foreach($ids as $id) {
-          LifxApi::setSelectorProperity($id, 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', $colors[$current_color], "on");
-          $current_color++;
-          LifxApi::setSelectorProperity($id, 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', null, "off");
-
-          $color = Color::where('color', $colors[$current_color])->first();
-
-          $sequence = new Sequence;
-          $sequence->level = $game->level;
-          $sequence->order = $current_color;
-          $sequence->game()->associate($game->id);
-          $sequence->color()->associate($color->id);
-          $sequence->save();
-        }
-
-        LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "off");
-        LifxApi::setSelectorProperity('group:AshOffice', 'c1b98fcbc42575c519d3227282f5956fc4e77ed97349e2942262b5bea985718d', "cyan", "on", 5);
+        return response()->json(['message' => 'Successfully queued sequence generation'], 200);
 
 
-        return "prompt user now";
+
     }
 
     public function SubmitRound(Request $request) {
