@@ -55,10 +55,8 @@ class AuthController extends Controller
 
       if(app('hash')->check($request->password, $user->password)) {
         return response()->json($user);
-
       } else {
         return response()->json(['message' => 'Invalid username or password'], 401);
-;
       }
 
     }

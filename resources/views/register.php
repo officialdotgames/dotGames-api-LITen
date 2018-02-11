@@ -23,7 +23,7 @@
       <input type="password" id="inputPassword" class="form-control form-middle" placeholder="Password" required>
 
       <label for="inputConfirmPassword" class="sr-only">Confirm Password</label>
-      <input type="password" id="inputPassword" class="form-control form-bottom" placeholder="Password" required>
+      <input type="password" id="inputPassword" class="form-control form-bottom" placeholder="Confirm Password" required>
 
       <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
       <a href="/login"><p class="register">Already Registered?</p></a>
